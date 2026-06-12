@@ -53,7 +53,8 @@ public sealed class CrudeLogFormatter() : ConsoleFormatter(FormatterName)
 
         if (exception != null)
         {
-            WriteMessage(textWriter, exception);
+            textWriter.Write(Environment.NewLine);
+            textWriter.WriteColoredMessage(exception, null, ConsoleColor.DarkRed);
         }
 
         textWriter.Write(Environment.NewLine);
@@ -62,14 +63,6 @@ public sealed class CrudeLogFormatter() : ConsoleFormatter(FormatterName)
     private static DateTimeOffset GetCurrentDateTime()
     {
         return DateTimeOffset.UtcNow;
-    }
-
-    private static void WriteMessage(TextWriter textWriter, string message)
-    {
-        if (string.IsNullOrEmpty(message))
-            return;
-
-        textWriter.Write(message);
     }
 
     private static string GetLogLevelString(LogLevel logLevel)
@@ -82,7 +75,7 @@ public sealed class CrudeLogFormatter() : ConsoleFormatter(FormatterName)
             LogLevel.Warning => "warn",
             LogLevel.Error => "fail",
             LogLevel.Critical => "crit",
-            _ => throw new ArgumentOutOfRangeException(nameof(logLevel))
+            _ => "none"
         };
     }
 

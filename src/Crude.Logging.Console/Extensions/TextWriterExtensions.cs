@@ -29,19 +29,45 @@ internal static class TextWriterExtensions
 
     public static void WriteHighlightedMessage(this TextWriter textWriter, string message, ConsoleColor? background, ConsoleColor foreground, ConsoleColor highlight)
     {
-        var messageSpan = message.AsSpan();
-        var sections = messageSpan.Split('\'');
+        var span = message.AsSpan();
 
-        var i = 0;
-
-        foreach (var section in sections)
+        var delimiterCount = 0;
+        for (var i = 0; i < span.Length; i++)
         {
-            var fgcolor = i % 2 == 0 ? foreground : highlight;
-            var buffer = messageSpan[section.Start.Value..section.End.Value];
-
-            WriteColoredBuffer(textWriter, buffer, background, fgcolor);
-            i++;
+            if (IsDelimiterQuote(span, i))
+                delimiterCount++;
         }
+
+        var usableDelimiters = delimiterCount - (delimiterCount % 2);
+
+        var seen = 0;
+        var runStart = 0;
+        var highlighted = false;
+
+        for (var i = 0; i < span.Length; i++)
+        {
+            if (seen >= usableDelimiters || !IsDelimiterQuote(span, i))
+                continue;
+
+            WriteColoredBuffer(textWriter, span[runStart..i], background, highlighted ? highlight : foreground);
+            seen++;
+            highlighted = !highlighted;
+            runStart = i + 1;
+        }
+
+        if (runStart < span.Length)
+            WriteColoredBuffer(textWriter, span[runStart..], background, highlighted ? highlight : foreground);
+    }
+
+    private static bool IsDelimiterQuote(ReadOnlySpan<char> span, int index)
+    {
+        if (span[index] != '\'')
+            return false;
+
+        var leftIsLetter = index > 0 && char.IsLetter(span[index - 1]);
+        var rightIsLetter = index + 1 < span.Length && char.IsLetter(span[index + 1]);
+
+        return !(leftIsLetter && rightIsLetter);
     }
 
     private static void WriteColoredBuffer(this TextWriter textWriter, ReadOnlySpan<char> buffer, ConsoleColor? background, ConsoleColor foreground)
