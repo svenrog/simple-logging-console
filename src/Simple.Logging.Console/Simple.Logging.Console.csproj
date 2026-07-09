@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<IsAotCompatible>true</IsAotCompatible>
-		<VersionPrefix>1.0.0</VersionPrefix>
+		<VersionPrefix>1.0.1</VersionPrefix>
 		<PackageId>Simple.Logging.Console</PackageId>
 		<Title>Super simple 🌈 console logging</Title>
 		<Authors>svenrog</Authors>
