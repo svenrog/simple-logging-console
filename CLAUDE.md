@@ -20,6 +20,7 @@ Formerly published as `Crude.Logging.Console` (namespace `Crude.Logging.Console`
 - **`IsAotCompatible` is true** — trim/AOT analyzers run on every build, not just publish. The formatter is registered via `[DynamicDependency]` (see `Extensions/LoggingBuilderExtensions.cs`) to preserve its constructors under trimming; `AddConsoleLogging` itself is annotated `[RequiresUnreferencedCode]`/`[RequiresDynamicCode]` because it calls `AddConsoleFormatter`, which needs those. Don't introduce new reflection, and keep these attributes in sync if the underlying `Microsoft.Extensions.Logging.Console` APIs change.
 - The `Microsoft.Extensions.Logging.Console` dependency is pinned to `[10.0.0, 11)`; keep it in that major range.
 - A test project exists at `tests/Simple.Logging.Console.Tests` (xUnit). Run `dotnet test SimpleLogFormatter.slnx`.
+- **`icon.png` is CC BY-SA 4.0, not GPL-2.0-only** — it's a cropped version of a third-party Wikimedia Commons image, licensed separately from the code (see the Icon section in `README.md`). Don't replace or crop it further without preserving attribution, and don't assume `PackageLicenseExpression` covers it.
 
 ## Legacy `Crude.Logging.Console` package
 

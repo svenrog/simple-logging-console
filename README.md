@@ -18,6 +18,10 @@ builder.Logging.AddConsoleLogging();
 
 > Formerly published as `Crude.Logging.Console`. That package is deprecated in favor of this one — see the [changelog](CHANGELOG.md).
 
+## Icon
+
+The package icon is a cropped version of ["Rainbow Emoji"](https://commons.wikimedia.org/wiki/File:Rainbow_Emoji.png) by [EmmanuelCordoliani](https://commons.wikimedia.org/wiki/User:EmmanuelCordoliani), used under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). It is licensed separately from the source code above (see [LICENSE.txt](LICENSE.txt)); redistributing `icon.png` itself, modified or not, must keep it under CC BY-SA 4.0 (or a compatible license) with the same attribution.
+
 ## Package maintainer
 
 https://github.com/svenrog
