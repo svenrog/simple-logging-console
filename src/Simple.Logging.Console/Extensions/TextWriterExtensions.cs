@@ -1,4 +1,4 @@
-﻿namespace Crude.Logging.Console.Extensions;
+﻿namespace Simple.Logging.Console.Extensions;
 
 internal static class TextWriterExtensions
 {

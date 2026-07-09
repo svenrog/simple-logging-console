@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Crude.Logging.Console\Crude.Logging.Console.csproj" />
+    <ProjectReference Include="..\..\src\Simple.Logging.Console\Simple.Logging.Console.csproj" />
   </ItemGroup>
 
 </Project>

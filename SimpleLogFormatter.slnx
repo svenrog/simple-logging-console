@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="CHANGELOG.md" />
+    <File Path="LICENSE.txt" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="src/Simple.Logging.Console/Simple.Logging.Console.csproj" Id="4c8dab55-c40e-4d96-97c9-07de15f6e2a8" />
+  <Project Path="tests/Simple.Logging.Console.Tests/Simple.Logging.Console.Tests.csproj" />
+</Solution>

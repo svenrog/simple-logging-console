@@ -1,13 +1,13 @@
-﻿using Crude.Logging.Console.Extensions;
+﻿using Simple.Logging.Console.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Logging.Console;
 
-namespace Crude.Logging.Console;
+namespace Simple.Logging.Console;
 
-public sealed class CrudeLogFormatter() : ConsoleFormatter(FormatterName)
+public sealed class SimpleLogFormatter() : ConsoleFormatter(FormatterName)
 {
-    public const string FormatterName = "crude";
+    public const string FormatterName = "simple";
 
     private const string _loglevelPadding = ": ";
     private const string _timeStampFormat = "HH:mm:ss.fff";

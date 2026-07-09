@@ -1,6 +1,6 @@
-using Crude.Logging.Console.Extensions;
+using Simple.Logging.Console.Extensions;
 
-namespace Crude.Logging.Console.Tests;
+namespace Simple.Logging.Console.Tests;
 
 public class HighlightTests
 {

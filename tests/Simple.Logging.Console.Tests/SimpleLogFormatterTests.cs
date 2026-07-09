@@ -1,16 +1,16 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace Crude.Logging.Console.Tests;
+namespace Simple.Logging.Console.Tests;
 
-public class CrudeLogFormatterTests
+public class SimpleLogFormatterTests
 {
     private static string Format(LogLevel level, string message, Exception? exception = null)
     {
         var entry = new LogEntry<string>(level, "Category", new EventId(0), message, exception, (state, _) => state);
 
         using var writer = new StringWriter();
-        new CrudeLogFormatter().Write(entry, scopeProvider: null, writer);
+        new SimpleLogFormatter().Write(entry, scopeProvider: null, writer);
         return writer.ToString();
     }
 

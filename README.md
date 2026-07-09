@@ -1,4 +1,4 @@
-# Crude log formatter
+# Simple log formatter
 
 A way to simplify console logging from the default C# fancy 2 line logging that provides way too much information for simple applications.
 
@@ -7,7 +7,7 @@ A way to simplify console logging from the default C# fancy 2 line logging that 
 
 ## Usage
 
-`dotnet add package Crude.Logging.Console`
+`dotnet add package Simple.Logging.Console`
 
 In your startup code
 
@@ -15,6 +15,8 @@ In your startup code
 var builder = Host.CreateApplicationBuilder(arguments);
 builder.Logging.AddConsoleLogging();
 ```
+
+> Formerly published as `Crude.Logging.Console`. That package is deprecated in favor of this one — see the [changelog](CHANGELOG.md).
 
 ## Package maintainer
 

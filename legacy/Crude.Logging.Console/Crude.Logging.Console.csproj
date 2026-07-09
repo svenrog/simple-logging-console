@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<VersionPrefix>1.0.4</VersionPrefix>
+		<PackageId>Crude.Logging.Console</PackageId>
+		<Title>DEPRECATED - use Simple.Logging.Console</Title>
+		<Authors>svenrog</Authors>
+		<Description>DEPRECATED: this package has been renamed to Simple.Logging.Console. This final version only forwards to it via a package dependency; please update your reference directly to Simple.Logging.Console.</Description>
+		<RepositoryType>Git</RepositoryType>
+		<PackageTags>Console Logging Colors Deprecated</PackageTags>
+		<PackageLicenseExpression>GPL-2.0-only</PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<PackageReleaseNotes>https://github.com/svenrog/simple-logging-console/blob/master/CHANGELOG.md</PackageReleaseNotes>
+		<PackageProjectUrl>https://github.com/svenrog/simple-logging-console</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryUrl>https://github.com/svenrog/simple-logging-console.git</RepositoryUrl>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Simple.Logging.Console\Simple.Logging.Console.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+</Project>

@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Crude.Logging.Console.Tests;
+namespace Simple.Logging.Console.Tests;
 
 internal static partial class AnsiText
 {
