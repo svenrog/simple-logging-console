@@ -1,4 +1,4 @@
-#🌈 Simple log formatter
+# Simple log formatter 🌈
 
 A way to simplify console logging from the default C# fancy 2 line logging that provides way too much information for simple applications.
 
