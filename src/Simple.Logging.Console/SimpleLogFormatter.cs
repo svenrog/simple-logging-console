@@ -7,7 +7,7 @@ namespace Simple.Logging.Console;
 
 public sealed class SimpleLogFormatter() : ConsoleFormatter(FormatterName)
 {
-    public const string FormatterName = "simple";
+    public const string FormatterName = "simple-color";
 
     private const string _loglevelPadding = ": ";
     private const string _timeStampFormat = "HH:mm:ss.fff";
