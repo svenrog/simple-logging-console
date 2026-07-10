@@ -17,7 +17,7 @@ Performance-focused rewrite: a warm `Write` now allocates **0 bytes** (previousl
 
 **Other:**
 
-- Added a `colorize` option (tri-state `bool?`) to both formatters and to `AddConsoleLogging`/`AddRgbConsoleLogging`. `null` (default) honors the [NO_COLOR](https://no-color.org) standard — any non-empty `NO_COLOR` disables color; `true`/`false` force it. When color is off the formatter emits plain text at the source (no escape codes) while still consuming the highlight/accent delimiters, so lines stay readable. Exposed as `LogPalette.ShouldColorizeByDefault`. Output redirection is deliberately not auto-treated as no-color; pass `colorize: false` (or set `NO_COLOR`) for that.
+- Added [NO_COLOR](https://no-color.org) support as the `LogPalette<TColor>.RespectNoColor` setting (default `true`): when on, any non-empty `NO_COLOR` environment variable makes the formatter emit plain text at the source (no escape codes) while still consuming the highlight/accent delimiters, so lines stay readable. Set it `false` (via `configurePalette` or on a palette passed to the formatter) to always emit color regardless of `NO_COLOR`. Output redirection is deliberately not treated as a no-color signal.
 
 ## [1.1.0] (Simple.Logging.Console)
 

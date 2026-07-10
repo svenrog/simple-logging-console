@@ -11,17 +11,17 @@ using Simple.Logging.Console;
 
 EnableVirtualTerminalIfWindows();
 
-// Force colorize:true so the palette always renders here, even if this is piped/redirected or
-// NO_COLOR is set — a preview's whole job is to show the colors.
-Preview("ANSI 16-color  (simple-color)", new ConsoleLogFormatter(colorize: true), Console.Out);
-Preview("RGB truecolor  (simple-rgb)", new RgbLogFormatter(colorize: true), Console.Out);
+// RespectNoColor:false forces the palette to render here, even if this is piped or NO_COLOR is set —
+// a preview's whole job is to show the colors.
+Preview("ANSI 16-color  (simple-color)", new ConsoleLogFormatter(ForceColor(DefaultPalettes.Ansi())), Console.Out);
+Preview("RGB truecolor  (simple-rgb)", new RgbLogFormatter(ForceColor(DefaultPalettes.Rgb())), Console.Out);
 
-// The no-color fallback is now a first-class formatter mode: colorize:false emits plain text at the
-// source (this is exactly what NO_COLOR triggers automatically).
-Preview("No color support (colorize: false)", new ConsoleLogFormatter(colorize: false), Console.Out);
+// The no-color fallback is a first-class library behavior: with NO_COLOR set (and RespectNoColor left
+// at its true default) the formatter emits plain text at the source.
+Preview("No color (NO_COLOR set)", NoColorFormatter(), Console.Out);
 
 // To preview a custom palette, swap in your own, e.g.:
-//   Preview("My palette", new RgbLogFormatter(BuildRgbPalette(), colorize: true), Console.Out);
+//   Preview("My palette", new RgbLogFormatter(ForceColor(BuildRgbPalette())), Console.Out);
 
 static void Preview(string title, ConsoleFormatter formatter, TextWriter writer)
 {
@@ -36,6 +36,28 @@ static void Preview(string title, ConsoleFormatter formatter, TextWriter writer)
 
 static LogEntry<string> MakeEntry(LogLevel level, string message, Exception? exception) =>
     new(level, "Preview", new EventId(0), message, exception, static (state, _) => state);
+
+static LogPalette<TColor> ForceColor<TColor>(LogPalette<TColor> palette) where TColor : struct, IConsoleColor
+{
+    palette.RespectNoColor = false;
+    return palette;
+}
+
+static ConsoleLogFormatter NoColorFormatter()
+{
+    // Formatters resolve color once at construction, so set NO_COLOR just long enough to build one in
+    // no-color mode — exactly the plain-text output an end user gets with NO_COLOR in their environment.
+    var previous = Environment.GetEnvironmentVariable("NO_COLOR");
+    Environment.SetEnvironmentVariable("NO_COLOR", "1");
+    try
+    {
+        return new ConsoleLogFormatter();
+    }
+    finally
+    {
+        Environment.SetEnvironmentVariable("NO_COLOR", previous);
+    }
+}
 
 static LogLevel[] Levels() =>
 [

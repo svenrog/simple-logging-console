@@ -20,8 +20,13 @@ public class FormatterBenchmarks
     public void Setup()
     {
         // Force color so the benchmark always measures the color path regardless of NO_COLOR.
-        _ansi = new ConsoleLogFormatter(colorize: true);
-        _rgb = new RgbLogFormatter(colorize: true);
+        var ansiPalette = DefaultPalettes.Ansi();
+        ansiPalette.RespectNoColor = false;
+        var rgbPalette = DefaultPalettes.Rgb();
+        rgbPalette.RespectNoColor = false;
+
+        _ansi = new ConsoleLogFormatter(ansiPalette);
+        _rgb = new RgbLogFormatter(rgbPalette);
 
         _plain = MakeEntry(_plainMessage);
         _highlighted = MakeEntry(_highlightedMessage);

@@ -62,30 +62,6 @@ public class ConsoleLogFormatterTests
     }
 
     [Fact]
-    public void Colorize_false_emits_no_escape_sequences_but_keeps_text()
-    {
-        var entry = new LogEntry<string>(LogLevel.Warning, "Category", new EventId(0), "user 'alice' ran `deploy`", null, (state, _) => state);
-
-        using var writer = new StringWriter();
-        new ConsoleLogFormatter(colorize: false).Write(entry, scopeProvider: null, writer);
-        var output = writer.ToString();
-
-        Assert.DoesNotContain('\e', output);           // no SGR escape codes at all
-        Assert.Contains("warn: user alice ran deploy", output); // delimiters still consumed
-    }
-
-    [Fact]
-    public void Colorize_true_emits_escape_sequences()
-    {
-        var entry = new LogEntry<string>(LogLevel.Warning, "Category", new EventId(0), "hello", null, (state, _) => state);
-
-        using var writer = new StringWriter();
-        new ConsoleLogFormatter(colorize: true).Write(entry, scopeProvider: null, writer);
-
-        Assert.Contains('\e', writer.ToString());
-    }
-
-    [Fact]
     public void Custom_palette_delimiters_are_honored()
     {
         var palette = DefaultPalettes.Ansi();

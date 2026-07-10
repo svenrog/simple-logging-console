@@ -10,6 +10,10 @@ public sealed class LogPalette<TColor> where TColor : struct, IConsoleColor
 
     public char AccentDelimiter { get; set; } = '`';
 
+    // When true (the default), a non-empty NO_COLOR environment variable disables all color output —
+    // plain text, no escape codes (https://no-color.org). Set false to always emit color regardless.
+    public bool RespectNoColor { get; set; } = true;
+
     public TColor TimestampColor { get; set; }
 
     public TColor ExceptionColor { get; set; }

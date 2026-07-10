@@ -21,10 +21,12 @@ public abstract class AbstractLogFormatter<TColor> : ConsoleFormatter
     private readonly LogPalette<TColor> _palette;
     private readonly bool _colorize;
 
-    protected AbstractLogFormatter(string name, LogPalette<TColor> palette, bool colorize) : base(name)
+    protected AbstractLogFormatter(string name, LogPalette<TColor> palette) : base(name)
     {
         _palette = palette;
-        _colorize = colorize;
+
+        // Resolved once at construction; NO_COLOR is read from the environment at startup.
+        _colorize = LogPalette.ShouldColorize(palette.RespectNoColor, Environment.GetEnvironmentVariable("NO_COLOR"));
     }
 
     public override void Write<TState>(in LogEntry<TState> logEntry, IExternalScopeProvider? scopeProvider, TextWriter textWriter)

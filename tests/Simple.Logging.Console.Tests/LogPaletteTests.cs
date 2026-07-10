@@ -55,18 +55,26 @@ public class LogPaletteTests
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    public void Colorize_defaults_on_when_NO_COLOR_is_absent_or_empty(string? noColor)
+    public void Colorizes_when_RespectNoColor_and_NO_COLOR_is_absent_or_empty(string? noColor)
     {
-        Assert.True(LogPalette.EvaluateColorize(noColor));
+        Assert.True(LogPalette.ShouldColorize(respectNoColor: true, noColor));
     }
 
     [Theory]
     [InlineData("1")]
     [InlineData("0")]
     [InlineData("anything")]
-    public void Any_non_empty_NO_COLOR_disables_color(string noColor)
+    public void RespectNoColor_disables_color_for_any_non_empty_NO_COLOR(string noColor)
     {
         // Per the NO_COLOR standard, presence (regardless of value) turns color off.
-        Assert.False(LogPalette.EvaluateColorize(noColor));
+        Assert.False(LogPalette.ShouldColorize(respectNoColor: true, noColor));
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("1")]
+    public void RespectNoColor_false_always_colorizes_ignoring_NO_COLOR(string? noColor)
+    {
+        Assert.True(LogPalette.ShouldColorize(respectNoColor: false, noColor));
     }
 }
