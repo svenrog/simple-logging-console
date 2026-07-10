@@ -19,10 +19,12 @@ public abstract class AbstractLogFormatter<TColor> : ConsoleFormatter
     private const int _timeStampLength = 12;
 
     private readonly LogPalette<TColor> _palette;
+    private readonly bool _colorize;
 
-    protected AbstractLogFormatter(string name, LogPalette<TColor> palette) : base(name)
+    protected AbstractLogFormatter(string name, LogPalette<TColor> palette, bool colorize) : base(name)
     {
         _palette = palette;
+        _colorize = colorize;
     }
 
     public override void Write<TState>(in LogEntry<TState> logEntry, IExternalScopeProvider? scopeProvider, TextWriter textWriter)
@@ -49,36 +51,38 @@ public abstract class AbstractLogFormatter<TColor> : ConsoleFormatter
         var levelColors = _palette.For(logLevel);
         var logLevelString = GetLogLevelString(logLevel);
 
-        WriteTimestamp(textWriter, stamp, _palette.TimestampColor);
+        WriteTimestamp(textWriter, stamp, _palette.TimestampColor, _colorize);
 
         if (logLevelString != null)
         {
             textWriter.Write(' ');
-            textWriter.WriteColoredMessage(logLevelString, levelColors.BadgeBackground, levelColors.BadgeForeground);
+            textWriter.WriteColoredMessage(logLevelString, levelColors.BadgeBackground, levelColors.BadgeForeground, _colorize);
         }
 
         textWriter.Write(_loglevelPadding);
 
-        textWriter.WriteHighlightedMessage(message, levelColors, _palette.HighlightDelimiter, _palette.AccentDelimiter);
+        textWriter.WriteHighlightedMessage(message, levelColors, _palette.HighlightDelimiter, _palette.AccentDelimiter, _colorize);
 
         if (exception != null)
         {
             textWriter.Write(Environment.NewLine);
-            textWriter.WriteColoredMessage<TColor>(exception, null, _palette.ExceptionColor);
+            textWriter.WriteColoredMessage<TColor>(exception, null, _palette.ExceptionColor, _colorize);
         }
 
         textWriter.Write(Environment.NewLine);
     }
 
-    private static void WriteTimestamp(TextWriter textWriter, DateTimeOffset stamp, TColor color)
+    private static void WriteTimestamp(TextWriter textWriter, DateTimeOffset stamp, TColor color, bool colorize)
     {
-        color.WriteForeground(textWriter);
+        if (colorize)
+            color.WriteForeground(textWriter);
 
         Span<char> buffer = stackalloc char[_timeStampLength];
         stamp.TryFormat(buffer, out var written, _timeStampFormat, CultureInfo.InvariantCulture);
         textWriter.Write(buffer[..written]);
 
-        textWriter.Write(EscapeParser._defaultForegroundColor);
+        if (colorize)
+            textWriter.Write(EscapeParser._defaultForegroundColor);
     }
 
     private static DateTimeOffset GetCurrentDateTime()

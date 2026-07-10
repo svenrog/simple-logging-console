@@ -19,8 +19,9 @@ public class FormatterBenchmarks
     [GlobalSetup]
     public void Setup()
     {
-        _ansi = new ConsoleLogFormatter();
-        _rgb = new RgbLogFormatter();
+        // Force color so the benchmark always measures the color path regardless of NO_COLOR.
+        _ansi = new ConsoleLogFormatter(colorize: true);
+        _rgb = new RgbLogFormatter(colorize: true);
 
         _plain = MakeEntry(_plainMessage);
         _highlighted = MakeEntry(_highlightedMessage);

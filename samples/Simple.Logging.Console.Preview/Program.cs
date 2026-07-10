@@ -11,15 +11,17 @@ using Simple.Logging.Console;
 
 EnableVirtualTerminalIfWindows();
 
-Preview("ANSI 16-color  (simple-color)", new ConsoleLogFormatter(), Console.Out);
-Preview("RGB truecolor  (simple-rgb)", new RgbLogFormatter(), Console.Out);
+// Force colorize:true so the palette always renders here, even if this is piped/redirected or
+// NO_COLOR is set — a preview's whole job is to show the colors.
+Preview("ANSI 16-color  (simple-color)", new ConsoleLogFormatter(colorize: true), Console.Out);
+Preview("RGB truecolor  (simple-rgb)", new RgbLogFormatter(colorize: true), Console.Out);
 
-// Emulate a terminal with no color support: the same output with SGR codes stripped. The stripped
-// result is identical whichever formatter produced it, so one pass is enough.
-Preview("No color support (fallback)", new ConsoleLogFormatter(), new AnsiStrippingTextWriter(Console.Out));
+// The no-color fallback is now a first-class formatter mode: colorize:false emits plain text at the
+// source (this is exactly what NO_COLOR triggers automatically).
+Preview("No color support (colorize: false)", new ConsoleLogFormatter(colorize: false), Console.Out);
 
 // To preview a custom palette, swap in your own, e.g.:
-//   Preview("My palette", new RgbLogFormatter(BuildRgbPalette()), Console.Out);
+//   Preview("My palette", new RgbLogFormatter(BuildRgbPalette(), colorize: true), Console.Out);
 
 static void Preview(string title, ConsoleFormatter formatter, TextWriter writer)
 {

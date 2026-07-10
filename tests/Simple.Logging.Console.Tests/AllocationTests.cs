@@ -15,13 +15,19 @@ public class AllocationTests
     [Fact]
     public void Ansi_formatter_does_not_allocate_per_write()
     {
-        AssertNoAllocations(new ConsoleLogFormatter());
+        AssertNoAllocations(new ConsoleLogFormatter(colorize: true));
     }
 
     [Fact]
     public void Rgb_formatter_does_not_allocate_per_write()
     {
-        AssertNoAllocations(new RgbLogFormatter());
+        AssertNoAllocations(new RgbLogFormatter(colorize: true));
+    }
+
+    [Fact]
+    public void No_color_formatter_does_not_allocate_per_write()
+    {
+        AssertNoAllocations(new ConsoleLogFormatter(colorize: false));
     }
 
     private static void AssertNoAllocations(ConsoleFormatter formatter)

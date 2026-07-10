@@ -67,9 +67,20 @@ There's no way to reliably query a terminal's actual color depth without risking
 
 Each level's badge background defaults to transparent so it doesn't clash with the terminal's own background; `Error` and `Critical` are the exception, keeping a filled block to stand out.
 
+## Disabling color
+
+By default the formatters honor the [`NO_COLOR`](https://no-color.org) convention: if the `NO_COLOR` environment variable is set to anything non-empty, output is emitted as plain text (no escape codes) — the highlight/accent delimiters are still consumed, so lines stay readable. Force the behavior either way with the `colorize` argument:
+
+```
+builder.Logging.AddConsoleLogging(colorize: false); // always plain text
+builder.Logging.AddRgbConsoleLogging(colorize: true); // always colored, ignoring NO_COLOR
+```
+
+`colorize: null` (the default) means "auto" — honor `NO_COLOR`. Output redirection is intentionally not treated as a no-color signal (piping into a color-aware pager is common), so pass `colorize: false` explicitly if you want plain text when redirected. The same argument is available on the `ConsoleLogFormatter` / `RgbLogFormatter` constructors, and `LogPalette.ShouldColorizeByDefault` exposes the auto decision.
+
 ## Previewing a palette
 
-The `samples/Simple.Logging.Console.Preview` project renders every log level and color slot (badge, message, highlight, accent, timestamp, exception) for both the ANSI and RGB defaults — plus a no-color fallback pass (SGR codes stripped) that emulates how the output degrades on a terminal without color support or under `NO_COLOR` — so you can eyeball a palette before shipping it:
+The `samples/Simple.Logging.Console.Preview` project renders every log level and color slot (badge, message, highlight, accent, timestamp, exception) for both the ANSI and RGB defaults — plus a `colorize: false` pass showing the plain-text fallback (what `NO_COLOR` produces) — so you can eyeball a palette before shipping it:
 
 ```
 dotnet run --project samples/Simple.Logging.Console.Preview

@@ -9,9 +9,15 @@ internal static class TextWriterExtensions
         Accent,
     }
 
-    public static void WriteColoredMessage<TColor>(this TextWriter textWriter, string message, TColor? background, TColor? foreground)
+    public static void WriteColoredMessage<TColor>(this TextWriter textWriter, string message, TColor? background, TColor? foreground, bool colorize)
         where TColor : struct, IConsoleColor
     {
+        if (!colorize)
+        {
+            textWriter.Write(message);
+            return;
+        }
+
         if (background is { } bg)
         {
             bg.WriteBackground(textWriter);
@@ -37,7 +43,7 @@ internal static class TextWriterExtensions
 
     // highlightDelimiter (default ') marks the highlight tier, accentDelimiter (default `) marks the accent tier —
     // each tier is only recognized while not inside the other.
-    public static void WriteHighlightedMessage<TColor>(this TextWriter textWriter, string message, LogLevelColors<TColor> colors, char highlightDelimiter, char accentDelimiter)
+    public static void WriteHighlightedMessage<TColor>(this TextWriter textWriter, string message, LogLevelColors<TColor> colors, char highlightDelimiter, char accentDelimiter, bool colorize)
         where TColor : struct, IConsoleColor
     {
         var span = message.AsSpan();
@@ -69,7 +75,7 @@ internal static class TextWriterExtensions
             if (!isHighlight && !isAccent)
                 continue;
 
-            WriteColoredBuffer(textWriter, span[runStart..i], GetColor(mode, colors));
+            WriteColoredBuffer(textWriter, span[runStart..i], GetColor(mode, colors), colorize);
 
             if (isHighlight)
             {
@@ -86,7 +92,7 @@ internal static class TextWriterExtensions
         }
 
         if (runStart < span.Length)
-            WriteColoredBuffer(textWriter, span[runStart..], GetColor(mode, colors));
+            WriteColoredBuffer(textWriter, span[runStart..], GetColor(mode, colors), colorize);
     }
 
     private static TColor GetColor<TColor>(HighlightMode mode, LogLevelColors<TColor> colors)
@@ -111,13 +117,15 @@ internal static class TextWriterExtensions
         return !(leftIsLetter && rightIsLetter);
     }
 
-    private static void WriteColoredBuffer<TColor>(this TextWriter textWriter, ReadOnlySpan<char> buffer, TColor foreground)
+    private static void WriteColoredBuffer<TColor>(this TextWriter textWriter, ReadOnlySpan<char> buffer, TColor foreground, bool colorize)
         where TColor : struct, IConsoleColor
     {
-        foreground.WriteForeground(textWriter);
+        if (colorize)
+            foreground.WriteForeground(textWriter);
 
         textWriter.Write(buffer);
 
-        textWriter.Write(EscapeParser._defaultForegroundColor);
+        if (colorize)
+            textWriter.Write(EscapeParser._defaultForegroundColor);
     }
 }

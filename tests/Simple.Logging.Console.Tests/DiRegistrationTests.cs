@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Logging.Console;
 using Simple.Logging.Console.Extensions;
 
@@ -41,6 +42,20 @@ public class DiRegistrationTests
         var palette = provider.GetRequiredService<LogPalette<AnsiColor>>();
 
         Assert.Equal('*', palette.HighlightDelimiter);
+    }
+
+    [Fact]
+    public void Colorize_false_flows_through_DI_to_the_registered_formatter()
+    {
+        using var provider = BuildProvider(b => b.AddConsoleLogging(colorize: false));
+
+        var formatter = Assert.Single(provider.GetServices<ConsoleFormatter>(), f => f is ConsoleLogFormatter);
+        var entry = new LogEntry<string>(LogLevel.Information, "Category", new EventId(0), "hello", null, (s, _) => s);
+
+        using var writer = new StringWriter();
+        formatter.Write(entry, scopeProvider: null, writer);
+
+        Assert.DoesNotContain('\e', writer.ToString());
     }
 
     private static ServiceProvider BuildProvider(Action<ILoggingBuilder> configure)

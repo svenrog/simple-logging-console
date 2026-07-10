@@ -12,6 +12,18 @@ public static class LogPalette
         Environment.GetEnvironmentVariable("COLORTERM"),
         Environment.GetEnvironmentVariable("WT_SESSION"));
 
+    // Whether a formatter emits color when its `colorize` is left unset. Honors the NO_COLOR standard
+    // (https://no-color.org): any non-empty NO_COLOR turns color off. Output redirection is deliberately
+    // NOT treated as a signal here — piping into a color-aware pager is common — so pass `colorize: false`
+    // (or set NO_COLOR) if you want plain text when redirected.
+    public static bool ShouldColorizeByDefault => EvaluateColorize(
+        Environment.GetEnvironmentVariable("NO_COLOR"));
+
+    internal static bool EvaluateColorize(string? noColor)
+    {
+        return string.IsNullOrEmpty(noColor);
+    }
+
     internal static bool EvaluateTrueColorSupport(bool isOutputRedirected, string? noColor, string? colorTerm, string? wtSession)
     {
         if (isOutputRedirected)

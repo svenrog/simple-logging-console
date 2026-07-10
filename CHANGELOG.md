@@ -15,6 +15,10 @@ Performance-focused rewrite: a warm `Write` now allocates **0 bytes** (previousl
 - The static true-color heuristic remains `LogPalette.LikelySupportsTrueColor`, now on a non-generic `LogPalette` type alongside the generic `LogPalette<TColor>` configuration holder.
 - Build populated defaults via `DefaultPalettes.Ansi()` / `DefaultPalettes.Rgb()` (both derived from one shared spec, so they stay in visual parity).
 
+**Other:**
+
+- Added a `colorize` option (tri-state `bool?`) to both formatters and to `AddConsoleLogging`/`AddRgbConsoleLogging`. `null` (default) honors the [NO_COLOR](https://no-color.org) standard — any non-empty `NO_COLOR` disables color; `true`/`false` force it. When color is off the formatter emits plain text at the source (no escape codes) while still consuming the highlight/accent delimiters, so lines stay readable. Exposed as `LogPalette.ShouldColorizeByDefault`. Output redirection is deliberately not auto-treated as no-color; pass `colorize: false` (or set `NO_COLOR`) for that.
+
 ## [1.1.0] (Simple.Logging.Console)
 
 - Relicensed from `GPL-2.0-only` to `MIT`, so referencing this package no longer imposes copyleft obligations on the consuming project. Prior published versions (1.0.0, 1.0.1) remain under `GPL-2.0-only`.

@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -8,40 +7,39 @@ namespace Simple.Logging.Console.Extensions;
 
 public static class LoggingBuilderExtensions
 {
-    // ANSI 16-color logging — the safe default.
-    public static ILoggingBuilder AddConsoleLogging(this ILoggingBuilder builder, LogLevel? minimumLevel = LogLevel.Debug, Action<LogPalette<AnsiColor>>? configurePalette = null)
+    // ANSI 16-color logging — the safe default. colorize: null honors NO_COLOR; true/false forces it.
+    public static ILoggingBuilder AddConsoleLogging(this ILoggingBuilder builder, LogLevel? minimumLevel = LogLevel.Debug, Action<LogPalette<AnsiColor>>? configurePalette = null, bool? colorize = null)
     {
         var palette = DefaultPalettes.Ansi();
         configurePalette?.Invoke(palette);
 
-        return builder.AddFormatter<AnsiColor, ConsoleLogFormatter>(ConsoleLogFormatter.FormatterName, palette, minimumLevel);
+        return builder.AddFormatter(ConsoleLogFormatter.FormatterName, new ConsoleLogFormatter(palette, colorize), palette, minimumLevel);
     }
 
     // 24-bit true-color logging. Only use where the terminal supports it (see LogPalette.LikelySupportsTrueColor).
-    public static ILoggingBuilder AddRgbConsoleLogging(this ILoggingBuilder builder, LogLevel? minimumLevel = LogLevel.Debug, Action<LogPalette<RgbColor>>? configurePalette = null)
+    public static ILoggingBuilder AddRgbConsoleLogging(this ILoggingBuilder builder, LogLevel? minimumLevel = LogLevel.Debug, Action<LogPalette<RgbColor>>? configurePalette = null, bool? colorize = null)
     {
         var palette = DefaultPalettes.Rgb();
         configurePalette?.Invoke(palette);
 
-        return builder.AddFormatter<RgbColor, RgbLogFormatter>(RgbLogFormatter.FormatterName, palette, minimumLevel);
+        return builder.AddFormatter(RgbLogFormatter.FormatterName, new RgbLogFormatter(palette, colorize), palette, minimumLevel);
     }
 
-    private static ILoggingBuilder AddFormatter<TColor, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TFormatter>(this ILoggingBuilder builder, string formatterName, LogPalette<TColor> palette, LogLevel? minimumLevel)
+    private static ILoggingBuilder AddFormatter<TColor>(this ILoggingBuilder builder, string formatterName, ConsoleFormatter formatter, LogPalette<TColor> palette, LogLevel? minimumLevel)
         where TColor : struct, IConsoleColor
-        where TFormatter : ConsoleFormatter
     {
         builder.AddConsole(x =>
         {
             x.FormatterName = formatterName;
         });
 
-        // Injected into the formatter's constructor by name-agnostic type; each formatter closes
-        // over its own TColor so the two palettes never collide in the container.
-        builder.Services.AddSingleton(palette);
+        // Registered as a prebuilt instance (not activated by type): sidesteps the reflection-based
+        // options binding of AddConsoleFormatter<,> AND the trim-analyzer PublicConstructors annotation
+        // that type activation would demand, and lets the caller pass the configured palette + colorize.
+        builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ConsoleFormatter>(formatter));
 
-        // Registered directly (not via AddConsoleFormatter<,>) to avoid the reflection-based options
-        // binding that would force [RequiresUnreferencedCode]/[RequiresDynamicCode] on every caller.
-        builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ConsoleFormatter, TFormatter>());
+        // Also exposed so callers can resolve the live palette from the container if they want.
+        builder.Services.AddSingleton(palette);
 
         if (minimumLevel.HasValue)
             builder.SetMinimumLevel(minimumLevel.Value);

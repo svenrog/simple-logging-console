@@ -23,7 +23,7 @@ public sealed class HighlightFixture
         var colors = new LogLevelColors<AnsiColor>(null, null, Message, Highlight, Accent);
 
         using var writer = new StringWriter();
-        writer.WriteHighlightedMessage(message, colors, highlightDelimiter ?? HighlightDelimiter, accentDelimiter ?? AccentDelimiter);
+        writer.WriteHighlightedMessage(message, colors, highlightDelimiter ?? HighlightDelimiter, accentDelimiter ?? AccentDelimiter, colorize: true);
         return writer.ToString();
     }
 
