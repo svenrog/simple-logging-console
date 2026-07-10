@@ -1,3 +1,7 @@
+using Simple.Logging.Console.Abstractions;
+using Simple.Logging.Console.Helpers;
+using Simple.Logging.Console.Models;
+
 namespace Simple.Logging.Console.Extensions;
 
 internal static class TextWriterExtensions
@@ -9,16 +13,23 @@ internal static class TextWriterExtensions
         Accent,
     }
 
-    public static void WriteColoredMessage(this TextWriter textWriter, string message, ILogColor? background, ILogColor? foreground)
+    public static void WriteColoredMessage<TColor>(this TextWriter textWriter, string message, TColor? background, TColor? foreground, bool colorize)
+        where TColor : struct, IConsoleColor
     {
-        if (background is not null)
+        if (!colorize)
         {
-            textWriter.Write(ColorMapper.GetBackgroundEscapeCode(background));
+            textWriter.Write(message);
+            return;
         }
 
-        if (foreground is not null)
+        if (background is { } bg)
         {
-            textWriter.Write(ColorMapper.GetForegroundEscapeCode(foreground));
+            bg.WriteBackground(textWriter);
+        }
+
+        if (foreground is { } fg)
+        {
+            fg.WriteForeground(textWriter);
         }
 
         textWriter.Write(message);
@@ -36,7 +47,8 @@ internal static class TextWriterExtensions
 
     // highlightDelimiter (default ') marks the highlight tier, accentDelimiter (default `) marks the accent tier —
     // each tier is only recognized while not inside the other.
-    public static void WriteHighlightedMessage(this TextWriter textWriter, string message, LogLevelColors colors, char highlightDelimiter, char accentDelimiter)
+    public static void WriteHighlightedMessage<TColor>(this TextWriter textWriter, string message, LogLevelColors<TColor> colors, char highlightDelimiter, char accentDelimiter, bool colorize)
+        where TColor : struct, IConsoleColor
     {
         var span = message.AsSpan();
 
@@ -67,7 +79,7 @@ internal static class TextWriterExtensions
             if (!isHighlight && !isAccent)
                 continue;
 
-            WriteColoredBuffer(textWriter, span[runStart..i], GetColor(mode, colors));
+            WriteColoredBuffer(textWriter, span[runStart..i], GetColor(mode, colors), colorize);
 
             if (isHighlight)
             {
@@ -84,10 +96,11 @@ internal static class TextWriterExtensions
         }
 
         if (runStart < span.Length)
-            WriteColoredBuffer(textWriter, span[runStart..], GetColor(mode, colors));
+            WriteColoredBuffer(textWriter, span[runStart..], GetColor(mode, colors), colorize);
     }
 
-    private static ILogColor GetColor(HighlightMode mode, LogLevelColors colors)
+    private static TColor GetColor<TColor>(HighlightMode mode, LogLevelColors<TColor> colors)
+        where TColor : struct, IConsoleColor
     {
         return mode switch
         {
@@ -108,12 +121,15 @@ internal static class TextWriterExtensions
         return !(leftIsLetter && rightIsLetter);
     }
 
-    private static void WriteColoredBuffer(this TextWriter textWriter, ReadOnlySpan<char> buffer, ILogColor foreground)
+    private static void WriteColoredBuffer<TColor>(this TextWriter textWriter, ReadOnlySpan<char> buffer, TColor foreground, bool colorize)
+        where TColor : struct, IConsoleColor
     {
-        textWriter.Write(ColorMapper.GetForegroundEscapeCode(foreground));
+        if (colorize)
+            foreground.WriteForeground(textWriter);
 
         textWriter.Write(buffer);
 
-        textWriter.Write(EscapeParser._defaultForegroundColor);
+        if (colorize)
+            textWriter.Write(EscapeParser._defaultForegroundColor);
     }
 }

@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] (Simple.Logging.Console)
+
+Performance-focused rewrite: a warm `Write` now allocates **0 bytes** (previously 48 B/line for ANSI and up to 544 B/line for RGB), and RGB formatting is ~37% faster. See `benchmarks/Simple.Logging.Console.Benchmarks`.
+
+**Breaking changes:**
+
+- Replaced the `ILogColor` marker interface with `IConsoleColor`, which now carries `WriteForeground`/`WriteBackground`. `AnsiColor` and `RgbColor` implement it and emit their own escape codes; `RgbColor` writes digits directly into a stack buffer instead of interpolating a string, so it no longer allocates per line.
+- `LogPalette` and `LogLevelColors` are now generic (`LogPalette<TColor>`, `LogLevelColors<TColor>`) and homogeneous — a single palette is entirely `AnsiColor` or entirely `RgbColor`. This is what lets the formatter stay generic and boxing-free.
+- Replaced `SimpleLogFormatter` with an abstract `AbstractLogFormatter<TColor>` base and two sealed formatters: `ConsoleLogFormatter` (ANSI, name `"simple-color"`) and `RgbLogFormatter` (24-bit truecolor, name `"simple-rgb"`). The generic pipeline uses constrained calls, so color writes never box or dispatch through an interface.
+- Added `AddRgbConsoleLogging` for the truecolor formatter; `AddConsoleLogging` now registers the ANSI formatter and its `configurePalette` delegate takes a `LogPalette<AnsiColor>`.
+- The static true-color heuristic remains `LogPalette.LikelySupportsTrueColor`, now on a non-generic `LogPalette` type alongside the generic `LogPalette<TColor>` configuration holder.
+- Build populated defaults via `DefaultPalettes.Ansi()` / `DefaultPalettes.Rgb()` (both derived from one shared spec, so they stay in visual parity).
+
+**Other:**
+
+- Added [NO_COLOR](https://no-color.org) support as the `LogPalette<TColor>.RespectNoColor` setting (default `true`): when on, any non-empty `NO_COLOR` environment variable makes the formatter emit plain text at the source (no escape codes) while still consuming the highlight/accent delimiters, so lines stay readable. Set it `false` (via `configurePalette` or on a palette passed to the formatter) to always emit color regardless of `NO_COLOR`. Output redirection is deliberately not treated as a no-color signal.
+
 ## [1.1.0] (Simple.Logging.Console)
 
 - Relicensed from `GPL-2.0-only` to `MIT`, so referencing this package no longer imposes copyleft obligations on the consuming project. Prior published versions (1.0.0, 1.0.1) remain under `GPL-2.0-only`.

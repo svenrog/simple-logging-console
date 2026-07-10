@@ -1,16 +1,30 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Simple.Logging.Console.Formatters;
+using System.Text.RegularExpressions;
 
 namespace Simple.Logging.Console.Tests;
 
-public class SimpleLogFormatterTests
+public partial class ConsoleLogFormatterTests
 {
+    [GeneratedRegex(@"^\d{2}:\d{2}:\d{2}\.\d{3} info: hello", RegexOptions.None, 200)]
+    private static partial Regex FormatFilter();
+
+    [Fact]
+    public void Line_starts_with_a_HH_mm_ss_fff_timestamp()
+    {
+        // Exercises the stackalloc + TryFormat timestamp path.
+        var output = AnsiText.Strip(Format(LogLevel.Information, "hello"));
+
+        Assert.Matches(FormatFilter(), output);
+    }
+
     private static string Format(LogLevel level, string message, Exception? exception = null)
     {
         var entry = new LogEntry<string>(level, "Category", new EventId(0), message, exception, (state, _) => state);
 
         using var writer = new StringWriter();
-        new SimpleLogFormatter().Write(entry, scopeProvider: null, writer);
+        new ConsoleLogFormatter().Write(entry, scopeProvider: null, writer);
         return writer.ToString();
     }
 
@@ -53,11 +67,14 @@ public class SimpleLogFormatterTests
     [Fact]
     public void Custom_palette_delimiters_are_honored()
     {
-        var palette = new LogPalette { HighlightDelimiter = '*', AccentDelimiter = '~' };
+        var palette = DefaultPalettes.Ansi();
+        palette.HighlightDelimiter = '*';
+        palette.AccentDelimiter = '~';
+
         var entry = new LogEntry<string>(LogLevel.Information, "Category", new EventId(0), "say *hello* and ~world~", null, (state, _) => state);
 
         using var writer = new StringWriter();
-        new SimpleLogFormatter(palette).Write(entry, scopeProvider: null, writer);
+        new ConsoleLogFormatter(palette).Write(entry, scopeProvider: null, writer);
 
         var output = AnsiText.Strip(writer.ToString());
 

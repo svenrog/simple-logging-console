@@ -1,4 +1,4 @@
-namespace Simple.Logging.Console;
+namespace Simple.Logging.Console.Helpers;
 
 internal static class EscapeParser
 {
@@ -43,15 +43,5 @@ internal static class EscapeParser
             ConsoleColor.Gray => "\e[47m",
             _ => _defaultBackgroundColor // Use default background color
         };
-    }
-
-    internal static string GetForegroundRgbCode(RgbColor color)
-    {
-        return $"\e[38;2;{color.R};{color.G};{color.B}m";
-    }
-
-    internal static string GetBackgroundRgbCode(RgbColor color)
-    {
-        return $"\e[48;2;{color.R};{color.G};{color.B}m";
     }
 }
