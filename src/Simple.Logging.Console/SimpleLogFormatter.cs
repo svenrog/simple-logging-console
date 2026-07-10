@@ -1,16 +1,18 @@
-﻿using Simple.Logging.Console.Extensions;
+using Simple.Logging.Console.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Logging.Console;
 
 namespace Simple.Logging.Console;
 
-public sealed class SimpleLogFormatter() : ConsoleFormatter(FormatterName)
+public sealed class SimpleLogFormatter(LogPalette? palette = null) : ConsoleFormatter(FormatterName)
 {
     public const string FormatterName = "simple-color";
 
     private const string _loglevelPadding = ": ";
     private const string _timeStampFormat = "HH:mm:ss.fff";
+
+    private readonly LogPalette _palette = palette ?? new LogPalette();
 
     public override void Write<TState>(in LogEntry<TState> logEntry, IExternalScopeProvider? scopeProvider, TextWriter textWriter)
     {
@@ -31,30 +33,27 @@ public sealed class SimpleLogFormatter() : ConsoleFormatter(FormatterName)
         }
     }
 
-    private static void WriteInternal(TextWriter textWriter, string message, LogLevel logLevel, string? exception, DateTimeOffset stamp)
+    private void WriteInternal(TextWriter textWriter, string message, LogLevel logLevel, string? exception, DateTimeOffset stamp)
     {
-        var logLevelColors = GetLogLevelConsoleColors(logLevel);
+        var levelColors = _palette.For(logLevel);
         var logLevelString = GetLogLevelString(logLevel);
 
-        textWriter.WriteColoredMessage(stamp.ToString(_timeStampFormat), null, ConsoleColor.Gray);
+        textWriter.WriteColoredMessage(stamp.ToString(_timeStampFormat), null, _palette.TimestampColor);
 
         if (logLevelString != null)
         {
             textWriter.Write(' ');
-            textWriter.WriteColoredMessage(logLevelString, logLevelColors.Background, logLevelColors.Foreground);
+            textWriter.WriteColoredMessage(logLevelString, levelColors.BadgeBackground, levelColors.BadgeForeground);
         }
 
         textWriter.Write(_loglevelPadding);
 
-        var messageColor = GetLogMessageConsoleColor(logLevel);
-        var highlightColor = GetLogMessageHighlightColor(logLevel);
-
-        textWriter.WriteHighlightedMessage(message, null, messageColor, highlightColor);
+        textWriter.WriteHighlightedMessage(message, levelColors, _palette.HighlightDelimiter, _palette.AccentDelimiter);
 
         if (exception != null)
         {
             textWriter.Write(Environment.NewLine);
-            textWriter.WriteColoredMessage(exception, null, ConsoleColor.DarkRed);
+            textWriter.WriteColoredMessage(exception, null, _palette.ExceptionColor);
         }
 
         textWriter.Write(Environment.NewLine);
@@ -76,41 +75,6 @@ public sealed class SimpleLogFormatter() : ConsoleFormatter(FormatterName)
             LogLevel.Error => "fail",
             LogLevel.Critical => "crit",
             _ => "none"
-        };
-    }
-
-
-    private static ConsoleColor GetLogMessageConsoleColor(LogLevel logLevel)
-    {
-        return logLevel switch
-        {
-            LogLevel.Trace => ConsoleColor.Blue,
-            LogLevel.Debug => ConsoleColor.Blue,
-            _ => ConsoleColor.DarkGray,
-        };
-    }
-
-    private static ConsoleColor GetLogMessageHighlightColor(LogLevel logLevel)
-    {
-        return logLevel switch
-        {
-            LogLevel.Trace => ConsoleColor.DarkCyan,
-            LogLevel.Debug => ConsoleColor.DarkCyan,
-            _ => ConsoleColor.Gray,
-        };
-    }
-
-    private static ConsoleColors GetLogLevelConsoleColors(LogLevel logLevel)
-    {
-        return logLevel switch
-        {
-            LogLevel.Trace => new ConsoleColors(ConsoleColor.Blue, ConsoleColor.Black),
-            LogLevel.Debug => new ConsoleColors(ConsoleColor.Blue, ConsoleColor.Black),
-            LogLevel.Information => new ConsoleColors(ConsoleColor.DarkGreen, ConsoleColor.Black),
-            LogLevel.Warning => new ConsoleColors(ConsoleColor.Yellow, ConsoleColor.Black),
-            LogLevel.Error => new ConsoleColors(ConsoleColor.Black, ConsoleColor.DarkRed),
-            LogLevel.Critical => new ConsoleColors(ConsoleColor.White, ConsoleColor.DarkRed),
-            _ => new ConsoleColors(null, null)
         };
     }
 }

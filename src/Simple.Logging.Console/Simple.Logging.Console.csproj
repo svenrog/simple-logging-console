@@ -6,14 +6,14 @@
 		<Nullable>enable</Nullable>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<IsAotCompatible>true</IsAotCompatible>
-		<VersionPrefix>1.0.1</VersionPrefix>
+		<VersionPrefix>1.1.0</VersionPrefix>
 		<PackageId>Simple.Logging.Console</PackageId>
 		<Title>Super simple 🌈 console logging</Title>
 		<Authors>svenrog</Authors>
 		<Description>Colored one line logging with minor highlight handling</Description>
 		<RepositoryType>Git</RepositoryType>
 		<PackageTags>Console Logging Colors</PackageTags>
-		<PackageLicenseExpression>GPL-2.0-only</PackageLicenseExpression>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageReleaseNotes>https://github.com/svenrog/simple-logging-console/blob/master/CHANGELOG.md</PackageReleaseNotes>
 		<PackageProjectUrl>https://github.com/svenrog/simple-logging-console</PackageProjectUrl>

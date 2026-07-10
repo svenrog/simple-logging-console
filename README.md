@@ -3,7 +3,8 @@
 A way to simplify console logging from the default C# fancy 2 line logging that provides way too much information for simple applications.
 
 - Has some simple coloring related to log levels.
-- Has some highlight formatting when placing text between single quotes ''.
+- Has some highlight formatting when placing text between `'single quotes'` or `` `backticks` ``.
+- Colors are configurable per log level via a `LogPalette`.
 
 ## Usage
 
@@ -15,6 +16,40 @@ In your startup code
 var builder = Host.CreateApplicationBuilder(arguments);
 builder.Logging.AddConsoleLogging();
 ```
+
+## Highlighting
+
+Text wrapped in `'single quotes'` is drawn in the level's highlight color; text wrapped in `` `backticks` `` is drawn in its accent color. The two delimiters don't nest inside each other — a backtick inside a quoted span (or vice versa) is treated as literal text.
+
+## Custom palette
+
+Pass a delegate to `AddConsoleLogging` to override any of the per-level colors, the timestamp color, the exception color, or the highlight/accent delimiter characters:
+
+```
+builder.Logging.AddConsoleLogging(configurePalette: palette =>
+{
+    palette.Warning = palette.Warning with { AccentColor = RgbColor.FromHex(0xFF8800) };
+    palette.Information = palette.Information with { MessageColor = new RgbColor(0, 200, 255) };
+    palette.HighlightDelimiter = '*';
+    palette.AccentDelimiter = '~';
+});
+```
+
+Every color slot is an `ILogColor`, implemented by either `AnsiColor` (implicitly convertible from a standard `ConsoleColor`, for maximum compatibility) or `RgbColor` (24-bit truecolor, via its constructor or `RgbColor.FromHex(0xRRGGBB)`). Truecolor renders correctly on modern ANSI-capable terminals; if output is redirected to a file or viewed through a legacy console, `Microsoft.Extensions.Logging.Console`'s own fallback only recognizes the standard 16 colors, so truecolor escape sequences may appear as raw text there — stick to `ConsoleColor` if that scenario matters to you.
+
+`LogPalette.LikelySupportsTrueColor` is a best-effort, static heuristic (`COLORTERM`, `WT_SESSION`, `NO_COLOR`, and whether output is redirected) you can check before building an RGB-heavy palette:
+
+```
+builder.Logging.AddConsoleLogging(configurePalette: palette =>
+{
+    if (LogPalette.LikelySupportsTrueColor)
+        palette.Information = palette.Information with { MessageColor = new RgbColor(0, 200, 255) };
+});
+```
+
+There's no way to reliably query a terminal's actual color depth without risking a hang on redirected output, so treat this as a hint, not a guarantee.
+
+Each level's badge background defaults to transparent so it doesn't clash with the terminal's own background; `Error` and `Critical` are the exception, keeping a filled block to stand out.
 
 > Formerly published as `Crude.Logging.Console`. That package is deprecated in favor of this one — see the [changelog](CHANGELOG.md).
 

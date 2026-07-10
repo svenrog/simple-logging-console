@@ -1,11 +1,11 @@
 namespace Simple.Logging.Console;
 
-internal static class AnsiParser
+internal static class EscapeParser
 {
     internal const string _defaultForegroundColor = "\e[39m\e[22m"; // reset to default foreground color
     internal const string _defaultBackgroundColor = "\e[49m"; // reset to the background color
 
-    internal static string GetForegroundColorEscapeCode(ConsoleColor color)
+    internal static string GetForegroundColorCode(ConsoleColor color)
     {
         return color switch
         {
@@ -29,7 +29,7 @@ internal static class AnsiParser
         };
     }
 
-    internal static string GetBackgroundColorEscapeCode(ConsoleColor? color)
+    internal static string GetBackgroundColorCode(ConsoleColor? color)
     {
         return color switch
         {
@@ -43,5 +43,15 @@ internal static class AnsiParser
             ConsoleColor.Gray => "\e[47m",
             _ => _defaultBackgroundColor // Use default background color
         };
+    }
+
+    internal static string GetForegroundRgbCode(RgbColor color)
+    {
+        return $"\e[38;2;{color.R};{color.G};{color.B}m";
+    }
+
+    internal static string GetBackgroundRgbCode(RgbColor color)
+    {
+        return $"\e[48;2;{color.R};{color.G};{color.B}m";
     }
 }

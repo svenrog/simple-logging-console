@@ -9,7 +9,7 @@ public class AnsiParserTests
     [InlineData(ConsoleColor.DarkGray, "\e[1m\e[30m")]
     public void GetForegroundColorEscapeCode_maps_known_colors(ConsoleColor color, string expected)
     {
-        Assert.Equal(expected, AnsiParser.GetForegroundColorEscapeCode(color));
+        Assert.Equal(expected, EscapeParser.GetForegroundColorCode(color));
     }
 
     [Theory]
@@ -17,19 +17,19 @@ public class AnsiParserTests
     [InlineData(ConsoleColor.DarkGreen, "\e[42m")]
     public void GetBackgroundColorEscapeCode_maps_known_colors(ConsoleColor color, string expected)
     {
-        Assert.Equal(expected, AnsiParser.GetBackgroundColorEscapeCode(color));
+        Assert.Equal(expected, EscapeParser.GetBackgroundColorCode(color));
     }
 
     [Fact]
     public void GetBackgroundColorEscapeCode_uses_default_for_null()
     {
-        Assert.Equal(AnsiParser._defaultBackgroundColor, AnsiParser.GetBackgroundColorEscapeCode(null));
+        Assert.Equal(EscapeParser._defaultBackgroundColor, EscapeParser.GetBackgroundColorCode(null));
     }
 
     [Fact]
     public void GetForegroundColorEscapeCode_uses_default_for_unmapped()
     {
         // Bright colors that are not in the table fall back to the default reset.
-        Assert.Equal(AnsiParser._defaultForegroundColor, AnsiParser.GetForegroundColorEscapeCode((ConsoleColor)999));
+        Assert.Equal(EscapeParser._defaultForegroundColor, EscapeParser.GetForegroundColorCode((ConsoleColor)999));
     }
 }
