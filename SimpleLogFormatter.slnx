@@ -9,4 +9,5 @@
   <Project Path="src/Simple.Logging.Console/Simple.Logging.Console.csproj" Id="4c8dab55-c40e-4d96-97c9-07de15f6e2a8" />
   <Project Path="tests/Simple.Logging.Console.Tests/Simple.Logging.Console.Tests.csproj" />
   <Project Path="benchmarks/Simple.Logging.Console.Benchmarks/Simple.Logging.Console.Benchmarks.csproj" />
+  <Project Path="samples/Simple.Logging.Console.Preview/Simple.Logging.Console.Preview.csproj" />
 </Solution>

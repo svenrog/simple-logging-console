@@ -67,6 +67,16 @@ There's no way to reliably query a terminal's actual color depth without risking
 
 Each level's badge background defaults to transparent so it doesn't clash with the terminal's own background; `Error` and `Critical` are the exception, keeping a filled block to stand out.
 
+## Previewing a palette
+
+The `samples/Simple.Logging.Console.Preview` project renders every log level and color slot (badge, message, highlight, accent, timestamp, exception) for both the ANSI and RGB defaults, so you can eyeball a palette before shipping it:
+
+```
+dotnet run --project samples/Simple.Logging.Console.Preview
+```
+
+Point it at your own palette by passing it to `new RgbLogFormatter(palette)` (or `new ConsoleLogFormatter(palette)`) in `Program.cs`.
+
 > Formerly published as `Crude.Logging.Console`. That package is deprecated in favor of this one — see the [changelog](CHANGELOG.md).
 
 ## Icon
