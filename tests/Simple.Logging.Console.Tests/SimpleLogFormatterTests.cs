@@ -49,4 +49,18 @@ public class SimpleLogFormatterTests
         Assert.Contains($"{Environment.NewLine}System.InvalidOperationException", output);
         Assert.Contains("boom", output);
     }
+
+    [Fact]
+    public void Custom_palette_delimiters_are_honored()
+    {
+        var palette = new LogPalette { HighlightDelimiter = '*', AccentDelimiter = '~' };
+        var entry = new LogEntry<string>(LogLevel.Information, "Category", new EventId(0), "say *hello* and ~world~", null, (state, _) => state);
+
+        using var writer = new StringWriter();
+        new SimpleLogFormatter(palette).Write(entry, scopeProvider: null, writer);
+
+        var output = AnsiText.Strip(writer.ToString());
+
+        Assert.Contains("say hello and world", output);
+    }
 }

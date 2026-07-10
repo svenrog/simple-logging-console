@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] (Simple.Logging.Console)
+
+- Added a configurable `LogPalette`: pass `configurePalette` to `AddConsoleLogging`, or a `LogPalette` instance to `SimpleLogFormatter`'s constructor, to override badge/message/highlight/accent/timestamp/exception colors per log level.
+- Added the `ILogColor` interface, implemented by `AnsiColor` (a `ConsoleColor`, implicitly convertible, unchanged default behavior) and `RgbColor` (a 24-bit truecolor value, via its constructor or `RgbColor.FromHex`).
+- Added a second highlight tier: text wrapped in `` `backticks` `` now renders in a level's accent color, alongside the existing `'single quote'` highlighting. The two delimiters don't nest inside each other.
+- Added `LogPalette.HighlightDelimiter` / `AccentDelimiter` so the `'` and `` ` `` delimiter characters are configurable, defaulting to their existing values.
+- Added `LogPalette.LikelySupportsTrueColor`, a static best-effort heuristic (`COLORTERM`, `WT_SESSION`, `NO_COLOR`, output redirection) for deciding whether to opt into an `RgbColor`-based palette.
+- Fixed `Trace`/`Debug`/`Information`/`Warning` badges rendering with an explicit black background, which stood out against non-black terminal backgrounds. Their backgrounds are now transparent by default; `Error`/`Critical` keep their filled alert block.
+
 ## [1.0.1] (Simple.Logging.Console)
 
 - Fixed the formatter name colliding with the built-in console formatter reserved name `"simple"` (`Microsoft.Extensions.Logging.Console.ConsoleFormatterNames.Simple`), which silently caused `AddConsoleLogging()` to fall back to the default 2-line formatter instead of `SimpleLogFormatter`. Renamed to `"simple-color"`.
