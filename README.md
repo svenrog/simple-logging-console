@@ -65,6 +65,6 @@ The package icon is a cropped version of ["Rainbow Emoji"](https://commons.wikim
 
 https://github.com/svenrog
 
-## Changelog
+## Change log
 
-[Changelog](CHANGELOG.md)
+[Changes are documented in](CHANGELOG.md)
