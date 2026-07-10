@@ -1,4 +1,7 @@
-namespace Simple.Logging.Console;
+using Simple.Logging.Console.Abstractions;
+using Simple.Logging.Console.Helpers;
+
+namespace Simple.Logging.Console.Models;
 
 public readonly struct AnsiColor(ConsoleColor value) : IConsoleColor
 {

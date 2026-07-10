@@ -1,3 +1,6 @@
+using Simple.Logging.Console.Abstractions;
+using Simple.Logging.Console.Models;
+
 namespace Simple.Logging.Console;
 
 // Both palettes are built from a single ConsoleColor spec so the ANSI and RGB defaults stay in

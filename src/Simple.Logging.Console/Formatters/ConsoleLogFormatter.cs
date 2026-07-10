@@ -1,4 +1,6 @@
-namespace Simple.Logging.Console;
+using Simple.Logging.Console.Models;
+
+namespace Simple.Logging.Console.Formatters;
 
 // ANSI 16-color formatter. Safe on any terminal that understands SGR codes. Name intentionally
 // avoids the built-in "simple" (which silently wins on collision) — see CLAUDE.md.

@@ -1,10 +1,13 @@
-using System.Globalization;
-using Simple.Logging.Console.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Logging.Console;
+using Simple.Logging.Console.Abstractions;
+using Simple.Logging.Console.Extensions;
+using Simple.Logging.Console.Helpers;
+using Simple.Logging.Console.Models;
+using System.Globalization;
 
-namespace Simple.Logging.Console;
+namespace Simple.Logging.Console.Formatters;
 
 // Generic over the concrete color struct so every color write is a constrained call: no boxing,
 // no interface dispatch. Concrete formatters (ConsoleLogFormatter, RgbLogFormatter) close the
@@ -26,7 +29,7 @@ public abstract class AbstractLogFormatter<TColor> : ConsoleFormatter
         _palette = palette;
 
         // Resolved once at construction; NO_COLOR is read from the environment at startup.
-        _colorize = LogPalette.ShouldColorize(palette.RespectNoColor, Environment.GetEnvironmentVariable("NO_COLOR"));
+        _colorize = PaletteHelper.ShouldColorize(palette.RespectNoColor, Environment.GetEnvironmentVariable("NO_COLOR"));
     }
 
     public override void Write<TState>(in LogEntry<TState> logEntry, IExternalScopeProvider? scopeProvider, TextWriter textWriter)

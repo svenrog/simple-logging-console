@@ -1,4 +1,4 @@
-namespace Simple.Logging.Console;
+namespace Simple.Logging.Console.Abstractions;
 
 // A color knows how to emit its own SGR escape codes. Formatters are generic over the concrete
 // color struct (where TColor : struct, IConsoleColor), so these calls are constrained calls: the

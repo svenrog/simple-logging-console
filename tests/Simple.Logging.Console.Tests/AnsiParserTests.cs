@@ -1,3 +1,5 @@
+using Simple.Logging.Console.Helpers;
+
 namespace Simple.Logging.Console.Tests;
 
 public class AnsiParserTests

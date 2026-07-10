@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
+using Simple.Logging.Console.Abstractions;
 
-namespace Simple.Logging.Console;
+namespace Simple.Logging.Console.Models;
 
 // The per-formatter color configuration. Homogeneous by design: one palette is entirely AnsiColor
 // or entirely RgbColor, which is what lets the formatter stay generic and boxing-free.

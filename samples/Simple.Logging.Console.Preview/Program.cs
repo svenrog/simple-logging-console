@@ -3,6 +3,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Logging.Console;
 using Simple.Logging.Console;
+using Simple.Logging.Console.Abstractions;
+using Simple.Logging.Console.Formatters;
+using Simple.Logging.Console.Models;
 
 // Previews every color slot of a palette: one line per log level (Trace..None), each carrying a
 // 'highlight' and an `accent` segment, plus one line with an exception. The formatter is driven

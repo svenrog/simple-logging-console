@@ -1,4 +1,4 @@
-namespace Simple.Logging.Console;
+namespace Simple.Logging.Console.Helpers;
 
 internal static class EscapeParser
 {

@@ -2,6 +2,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using Simple.Logging.Console.Extensions;
+using Simple.Logging.Console.Formatters;
+using Simple.Logging.Console.Models;
 
 namespace Simple.Logging.Console.Tests;
 

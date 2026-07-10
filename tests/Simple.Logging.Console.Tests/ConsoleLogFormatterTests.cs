@@ -1,20 +1,23 @@
-using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Simple.Logging.Console.Formatters;
+using System.Text.RegularExpressions;
 
 namespace Simple.Logging.Console.Tests;
 
-public class ConsoleLogFormatterTests
+public partial class ConsoleLogFormatterTests
 {
+    [GeneratedRegex(@"^\d{2}:\d{2}:\d{2}\.\d{3} info: hello", RegexOptions.None, 200)]
+    private static partial Regex FormatFilter();
+
     [Fact]
     public void Line_starts_with_a_HH_mm_ss_fff_timestamp()
     {
         // Exercises the stackalloc + TryFormat timestamp path.
         var output = AnsiText.Strip(Format(LogLevel.Information, "hello"));
 
-        Assert.Matches(new Regex(@"^\d{2}:\d{2}:\d{2}\.\d{3} info: hello"), output);
+        Assert.Matches(FormatFilter(), output);
     }
-
 
     private static string Format(LogLevel level, string message, Exception? exception = null)
     {

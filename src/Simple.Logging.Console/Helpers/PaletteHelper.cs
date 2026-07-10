@@ -1,8 +1,8 @@
-namespace Simple.Logging.Console;
+namespace Simple.Logging.Console.Helpers;
 
 // True-color capability detection. Color-agnostic, so it lives on this non-generic type rather than
 // the generic palette. Build populated palettes via DefaultPalettes.Ansi() / DefaultPalettes.Rgb().
-public static class LogPalette
+public static class PaletteHelper
 {
     // Best-effort only: there's no reliable way to query a terminal's color depth without
     // risking a hang on redirected/non-interactive output, so this is env-var heuristics.

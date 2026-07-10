@@ -1,4 +1,6 @@
-namespace Simple.Logging.Console;
+using Simple.Logging.Console.Models;
+
+namespace Simple.Logging.Console.Formatters;
 
 // 24-bit true-color formatter. Requires a terminal that supports RGB SGR codes
 // (see LogPalette.LikelySupportsTrueColor).

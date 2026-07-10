@@ -1,3 +1,7 @@
+using Simple.Logging.Console.Abstractions;
+using Simple.Logging.Console.Formatters;
+using Simple.Logging.Console.Models;
+
 namespace Simple.Logging.Console.Tests;
 
 // Color hot path. RespectNoColor=false forces color regardless of any NO_COLOR in the environment,

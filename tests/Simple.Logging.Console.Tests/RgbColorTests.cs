@@ -1,3 +1,5 @@
+using Simple.Logging.Console.Models;
+
 namespace Simple.Logging.Console.Tests;
 
 public class RgbColorTests

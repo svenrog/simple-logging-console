@@ -1,3 +1,7 @@
+using Simple.Logging.Console.Abstractions;
+using Simple.Logging.Console.Helpers;
+using Simple.Logging.Console.Models;
+
 namespace Simple.Logging.Console.Extensions;
 
 internal static class TextWriterExtensions

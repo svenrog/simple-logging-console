@@ -1,6 +1,7 @@
 using BenchmarkDotNet.Attributes;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Simple.Logging.Console.Formatters;
 
 namespace Simple.Logging.Console.Benchmarks;
 

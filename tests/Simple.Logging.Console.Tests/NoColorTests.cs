@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Logging.Console;
 using Simple.Logging.Console.Extensions;
+using Simple.Logging.Console.Formatters;
 
 namespace Simple.Logging.Console.Tests;
 

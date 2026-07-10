@@ -1,4 +1,6 @@
-namespace Simple.Logging.Console;
+using Simple.Logging.Console.Abstractions;
+
+namespace Simple.Logging.Console.Models;
 
 public readonly struct RgbColor(byte red, byte green, byte blue) : IConsoleColor
 {
