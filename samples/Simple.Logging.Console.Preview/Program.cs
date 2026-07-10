@@ -11,16 +11,18 @@ using Simple.Logging.Console;
 
 EnableVirtualTerminalIfWindows();
 
-Preview("ANSI 16-color  (simple-color)", new ConsoleLogFormatter());
-Preview("RGB truecolor  (simple-rgb)", new RgbLogFormatter());
+Preview("ANSI 16-color  (simple-color)", new ConsoleLogFormatter(), Console.Out);
+Preview("RGB truecolor  (simple-rgb)", new RgbLogFormatter(), Console.Out);
+
+// Emulate a terminal with no color support: the same output with SGR codes stripped. The stripped
+// result is identical whichever formatter produced it, so one pass is enough.
+Preview("No color support (fallback)", new ConsoleLogFormatter(), new AnsiStrippingTextWriter(Console.Out));
 
 // To preview a custom palette, swap in your own, e.g.:
-//   Preview("My palette", new RgbLogFormatter(BuildRgbPalette()));
+//   Preview("My palette", new RgbLogFormatter(BuildRgbPalette()), Console.Out);
 
-static void Preview(string title, ConsoleFormatter formatter)
+static void Preview(string title, ConsoleFormatter formatter, TextWriter writer)
 {
-    var writer = Console.Out;
-
     Console.WriteLine();
     Console.WriteLine($"=== {title} ===");
 

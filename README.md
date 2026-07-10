@@ -69,7 +69,7 @@ Each level's badge background defaults to transparent so it doesn't clash with t
 
 ## Previewing a palette
 
-The `samples/Simple.Logging.Console.Preview` project renders every log level and color slot (badge, message, highlight, accent, timestamp, exception) for both the ANSI and RGB defaults, so you can eyeball a palette before shipping it:
+The `samples/Simple.Logging.Console.Preview` project renders every log level and color slot (badge, message, highlight, accent, timestamp, exception) for both the ANSI and RGB defaults — plus a no-color fallback pass (SGR codes stripped) that emulates how the output degrades on a terminal without color support or under `NO_COLOR` — so you can eyeball a palette before shipping it:
 
 ```
 dotnet run --project samples/Simple.Logging.Console.Preview
