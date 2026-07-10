@@ -1,3 +1,4 @@
+using System.Globalization;
 using Simple.Logging.Console.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -5,14 +6,24 @@ using Microsoft.Extensions.Logging.Console;
 
 namespace Simple.Logging.Console;
 
-public sealed class SimpleLogFormatter(LogPalette? palette = null) : ConsoleFormatter(FormatterName)
+// Generic over the concrete color struct so every color write is a constrained call: no boxing,
+// no interface dispatch. Concrete formatters (ConsoleLogFormatter, RgbLogFormatter) close the
+// generic, which also roots the closed types for the trim/AOT analyzer.
+public abstract class AbstractLogFormatter<TColor> : ConsoleFormatter
+    where TColor : struct, IConsoleColor
 {
-    public const string FormatterName = "simple-color";
-
     private const string _loglevelPadding = ": ";
     private const string _timeStampFormat = "HH:mm:ss.fff";
 
-    private readonly LogPalette _palette = palette ?? new LogPalette();
+    // "HH:mm:ss.fff" is 12 chars; a small stackalloc keeps the timestamp off the heap.
+    private const int _timeStampLength = 12;
+
+    private readonly LogPalette<TColor> _palette;
+
+    protected AbstractLogFormatter(string name, LogPalette<TColor> palette) : base(name)
+    {
+        _palette = palette;
+    }
 
     public override void Write<TState>(in LogEntry<TState> logEntry, IExternalScopeProvider? scopeProvider, TextWriter textWriter)
     {
@@ -38,7 +49,7 @@ public sealed class SimpleLogFormatter(LogPalette? palette = null) : ConsoleForm
         var levelColors = _palette.For(logLevel);
         var logLevelString = GetLogLevelString(logLevel);
 
-        textWriter.WriteColoredMessage(stamp.ToString(_timeStampFormat), null, _palette.TimestampColor);
+        WriteTimestamp(textWriter, stamp, _palette.TimestampColor);
 
         if (logLevelString != null)
         {
@@ -53,10 +64,21 @@ public sealed class SimpleLogFormatter(LogPalette? palette = null) : ConsoleForm
         if (exception != null)
         {
             textWriter.Write(Environment.NewLine);
-            textWriter.WriteColoredMessage(exception, null, _palette.ExceptionColor);
+            textWriter.WriteColoredMessage<TColor>(exception, null, _palette.ExceptionColor);
         }
 
         textWriter.Write(Environment.NewLine);
+    }
+
+    private static void WriteTimestamp(TextWriter textWriter, DateTimeOffset stamp, TColor color)
+    {
+        color.WriteForeground(textWriter);
+
+        Span<char> buffer = stackalloc char[_timeStampLength];
+        stamp.TryFormat(buffer, out var written, _timeStampFormat, CultureInfo.InvariantCulture);
+        textWriter.Write(buffer[..written]);
+
+        textWriter.Write(EscapeParser._defaultForegroundColor);
     }
 
     private static DateTimeOffset GetCurrentDateTime()

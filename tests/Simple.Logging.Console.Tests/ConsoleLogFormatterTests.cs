@@ -3,14 +3,14 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Simple.Logging.Console.Tests;
 
-public class SimpleLogFormatterTests
+public class ConsoleLogFormatterTests
 {
     private static string Format(LogLevel level, string message, Exception? exception = null)
     {
         var entry = new LogEntry<string>(level, "Category", new EventId(0), message, exception, (state, _) => state);
 
         using var writer = new StringWriter();
-        new SimpleLogFormatter().Write(entry, scopeProvider: null, writer);
+        new ConsoleLogFormatter().Write(entry, scopeProvider: null, writer);
         return writer.ToString();
     }
 
@@ -53,11 +53,14 @@ public class SimpleLogFormatterTests
     [Fact]
     public void Custom_palette_delimiters_are_honored()
     {
-        var palette = new LogPalette { HighlightDelimiter = '*', AccentDelimiter = '~' };
+        var palette = DefaultPalettes.Ansi();
+        palette.HighlightDelimiter = '*';
+        palette.AccentDelimiter = '~';
+
         var entry = new LogEntry<string>(LogLevel.Information, "Category", new EventId(0), "say *hello* and ~world~", null, (state, _) => state);
 
         using var writer = new StringWriter();
-        new SimpleLogFormatter(palette).Write(entry, scopeProvider: null, writer);
+        new ConsoleLogFormatter(palette).Write(entry, scopeProvider: null, writer);
 
         var output = AnsiText.Strip(writer.ToString());
 

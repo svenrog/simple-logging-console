@@ -44,14 +44,4 @@ internal static class EscapeParser
             _ => _defaultBackgroundColor // Use default background color
         };
     }
-
-    internal static string GetForegroundRgbCode(RgbColor color)
-    {
-        return $"\e[38;2;{color.R};{color.G};{color.B}m";
-    }
-
-    internal static string GetBackgroundRgbCode(RgbColor color)
-    {
-        return $"\e[48;2;{color.R};{color.G};{color.B}m";
-    }
 }

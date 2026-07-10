@@ -21,34 +21,46 @@ var builder = Host.CreateApplicationBuilder(arguments);
 builder.Logging.AddConsoleLogging();
 ```
 
+`AddConsoleLogging` uses the ANSI 16-color formatter, which renders correctly on any terminal that understands SGR escape codes. For 24-bit truecolor, use `AddRgbConsoleLogging` instead (see [Custom palette](#custom-palette)).
+
 ## Highlighting
 
 Text wrapped in `'single quotes'` is drawn in the level's highlight color; text wrapped in `` `backticks` `` is drawn in its accent color. The two delimiters don't nest inside each other — a backtick inside a quoted span (or vice versa) is treated as literal text.
 
 ## Custom palette
 
-Pass a delegate to `AddConsoleLogging` to override any of the per-level colors, the timestamp color, the exception color, or the highlight/accent delimiter characters:
+Pass a delegate to override any of the per-level colors, the timestamp color, the exception color, or the highlight/accent delimiter characters. Palettes are **homogeneous**: `AddConsoleLogging` configures a `LogPalette<AnsiColor>` (standard `ConsoleColor` values, implicitly convertible), and `AddRgbConsoleLogging` configures a `LogPalette<RgbColor>` (24-bit truecolor). Each color slot is an `IConsoleColor`; a single palette can't mix the two, which is what keeps the formatter allocation-free (no boxing, no per-line escape-string allocation).
+
+ANSI (works everywhere):
 
 ```
 builder.Logging.AddConsoleLogging(configurePalette: palette =>
 {
-    palette.Warning = palette.Warning with { AccentColor = RgbColor.FromHex(0xFF8800) };
-    palette.Information = palette.Information with { MessageColor = new RgbColor(0, 200, 255) };
+    palette.Warning = palette.Warning with { AccentColor = ConsoleColor.DarkYellow };
     palette.HighlightDelimiter = '*';
     palette.AccentDelimiter = '~';
 });
 ```
 
-Every color slot is an `ILogColor`, implemented by either `AnsiColor` (implicitly convertible from a standard `ConsoleColor`, for maximum compatibility) or `RgbColor` (24-bit truecolor, via its constructor or `RgbColor.FromHex(0xRRGGBB)`). Truecolor renders correctly on modern ANSI-capable terminals; if output is redirected to a file or viewed through a legacy console, `Microsoft.Extensions.Logging.Console`'s own fallback only recognizes the standard 16 colors, so truecolor escape sequences may appear as raw text there — stick to `ConsoleColor` if that scenario matters to you.
-
-`LogPalette.LikelySupportsTrueColor` is a best-effort, static heuristic (`COLORTERM`, `WT_SESSION`, `NO_COLOR`, and whether output is redirected) you can check before building an RGB-heavy palette:
+Truecolor:
 
 ```
-builder.Logging.AddConsoleLogging(configurePalette: palette =>
+builder.Logging.AddRgbConsoleLogging(configurePalette: palette =>
 {
-    if (LogPalette.LikelySupportsTrueColor)
-        palette.Information = palette.Information with { MessageColor = new RgbColor(0, 200, 255) };
+    palette.Warning = palette.Warning with { AccentColor = RgbColor.FromHex(0xFF8800) };
+    palette.Information = palette.Information with { MessageColor = new RgbColor(0, 200, 255) };
 });
+```
+
+Truecolor renders correctly on modern ANSI-capable terminals; if output is redirected to a file or viewed through a legacy console, `Microsoft.Extensions.Logging.Console`'s own fallback only recognizes the standard 16 colors, so truecolor escape sequences may appear as raw text there — use `AddConsoleLogging` if that scenario matters to you.
+
+`LogPalette.LikelySupportsTrueColor` is a best-effort, static heuristic (`COLORTERM`, `WT_SESSION`, `NO_COLOR`, and whether output is redirected) you can check before choosing which formatter to register:
+
+```
+if (LogPalette.LikelySupportsTrueColor)
+    builder.Logging.AddRgbConsoleLogging();
+else
+    builder.Logging.AddConsoleLogging();
 ```
 
 There's no way to reliably query a terminal's actual color depth without risking a hang on redirected output, so treat this as a hint, not a guarantee.

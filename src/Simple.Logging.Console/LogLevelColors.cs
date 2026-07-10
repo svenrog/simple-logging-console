@@ -1,8 +1,11 @@
 namespace Simple.Logging.Console;
 
-public readonly record struct LogLevelColors(
-    ILogColor? BadgeForeground,
-    ILogColor? BadgeBackground,
-    ILogColor MessageColor,
-    ILogColor HighlightColor,
-    ILogColor AccentColor);
+// Badge colors are nullable (null == no badge coloring). As Nullable<TColor> they stay value types,
+// so nothing here boxes.
+public readonly record struct LogLevelColors<TColor>(
+    TColor? BadgeForeground,
+    TColor? BadgeBackground,
+    TColor MessageColor,
+    TColor HighlightColor,
+    TColor AccentColor)
+    where TColor : struct, IConsoleColor;
