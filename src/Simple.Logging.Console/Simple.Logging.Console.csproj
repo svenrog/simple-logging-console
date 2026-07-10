@@ -13,7 +13,7 @@
 		<Description>Colored one line logging with minor highlight handling</Description>
 		<RepositoryType>Git</RepositoryType>
 		<PackageTags>Console Logging Colors</PackageTags>
-		<PackageLicenseExpression>GPL-2.0-only</PackageLicenseExpression>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageReleaseNotes>https://github.com/svenrog/simple-logging-console/blob/master/CHANGELOG.md</PackageReleaseNotes>
 		<PackageProjectUrl>https://github.com/svenrog/simple-logging-console</PackageProjectUrl>

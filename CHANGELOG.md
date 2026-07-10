@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [1.1.0] (Simple.Logging.Console)
 
+- Relicensed from `GPL-2.0-only` to `MIT`, so referencing this package no longer imposes copyleft obligations on the consuming project. Prior published versions (1.0.0, 1.0.1) remain under `GPL-2.0-only`.
 - Added a configurable `LogPalette`: pass `configurePalette` to `AddConsoleLogging`, or a `LogPalette` instance to `SimpleLogFormatter`'s constructor, to override badge/message/highlight/accent/timestamp/exception colors per log level.
 - Added the `ILogColor` interface, implemented by `AnsiColor` (a `ConsoleColor`, implicitly convertible, unchanged default behavior) and `RgbColor` (a 24-bit truecolor value, via its constructor or `RgbColor.FromHex`).
 - Added a second highlight tier: text wrapped in `` `backticks` `` now renders in a level's accent color, alongside the existing `'single quote'` highlighting. The two delimiters don't nest inside each other.

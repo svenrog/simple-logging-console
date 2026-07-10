@@ -21,7 +21,7 @@ Formerly published as `Crude.Logging.Console` (namespace `Crude.Logging.Console`
 - **Formatter name must not collide with a built-in name** — `ConsoleFormatterNames` reserves `"simple"`, `"json"`, and `"systemd"`. `SimpleLogFormatter.FormatterName` is `"simple-color"` specifically to avoid colliding with the built-in `"simple"` formatter; a collision silently falls back to the built-in formatter instead of throwing, so it won't be caught by tests that call `Write()` directly — only by exercising `AddConsoleLogging()` through actual DI.
 - The `Microsoft.Extensions.Logging.Console` dependency is pinned to `[10.0.0, 11)`; keep it in that major range.
 - A test project exists at `tests/Simple.Logging.Console.Tests` (xUnit). Run `dotnet test SimpleLogFormatter.slnx`.
-- **`icon.png` is CC BY-SA 4.0, not GPL-2.0-only** — it's a cropped version of a third-party Wikimedia Commons image, licensed separately from the code (see the Icon section in `README.md`). Don't replace or crop it further without preserving attribution, and don't assume `PackageLicenseExpression` covers it.
+- **`icon.png` is CC BY-SA 4.0, not MIT** — it's a cropped version of a third-party Wikimedia Commons image, licensed separately from the code (see the Icon section in `README.md`). Don't replace or crop it further without preserving attribution, and don't assume `PackageLicenseExpression` covers it.
 
 ## Legacy `Crude.Logging.Console` package
 

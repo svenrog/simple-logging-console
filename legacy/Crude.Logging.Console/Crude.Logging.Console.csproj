@@ -12,7 +12,7 @@
 		<Description>DEPRECATED: this package has been renamed to Simple.Logging.Console. This final version only forwards to it via a package dependency; please update your reference directly to Simple.Logging.Console.</Description>
 		<RepositoryType>Git</RepositoryType>
 		<PackageTags>Console Logging Colors Deprecated</PackageTags>
-		<PackageLicenseExpression>GPL-2.0-only</PackageLicenseExpression>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageReleaseNotes>https://github.com/svenrog/simple-logging-console/blob/master/CHANGELOG.md</PackageReleaseNotes>
 		<PackageProjectUrl>https://github.com/svenrog/simple-logging-console</PackageProjectUrl>
