@@ -1,5 +1,10 @@
 # Simple log formatter 🌈
 
+[![NuGet](https://img.shields.io/nuget/v/Simple.Logging.Console)](https://www.nuget.org/packages/Simple.Logging.Console)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/Simple.Logging.Console)](https://www.nuget.org/packages/Simple.Logging.Console)
+[![Publish](https://img.shields.io/github/actions/workflow/status/svenrog/simple-logging-console/publish.yml)](https://github.com/svenrog/simple-logging-console/actions/workflows/publish.yml)
+[![License: MIT](https://img.shields.io/github/license/svenrog/simple-logging-console)](LICENSE.txt)
+
 A way to simplify console logging from the default C# fancy 2 line logging that provides way too much information for simple applications.
 
 - Has some simple coloring related to log levels.
