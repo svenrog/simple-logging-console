@@ -99,4 +99,4 @@ https://github.com/svenrog
 
 ## Change log
 
-[Changes are documented in](CHANGELOG.md)
+Changes are documented in [CHANGELOG.md](./CHANGELOG.md).
